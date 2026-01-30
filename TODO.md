@@ -1,6 +1,4 @@
-1. Encoding support for BINARY
-2. MORSE
-3. (LOW PRIORITY) Encoding and decoding support for the following ciphers:
+1. (LOW PRIORITY) Encoding and decoding support for the following ciphers:
 * "AMSCO"
 * "AUTOKEY"
 * "BACONIAN"
