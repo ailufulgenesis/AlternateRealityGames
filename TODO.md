@@ -1,4 +1,8 @@
-1. (LOW PRIORITY) Encoding and decoding support for the following ciphers:
+1. A1Z26
+2. Hexadecimal
+3. Decimal
+4. Octal
+. (LOW PRIORITY) Encoding and decoding support for the following ciphers:
 * "AMSCO"
 * "AUTOKEY"
 * "BACONIAN"
