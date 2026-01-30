@@ -45,17 +45,22 @@ class Dictionaries
             {"-.-.--", '!'},{".--.-.", '@'},{".-...", '&'},{"-.--.", '('},{"-.--.-", ')'},{"---...", ':'},{".----.", '\''},
             {".-..-.", '\"'},{"--..--", ','},{".-.-.-", '.'},{"-..-.", '/'},{"..--..", '?'},{".-.-.",'+'},{"/", ' '},{"-....-", '-'}
     };
+    public static Dictionary<int, char> a1z26ToChar = new Dictionary<int, char>
+    {
+        {0, ' '},{1, 'A'},{2, 'B'},{3, 'C'},{4, 'D'},{5, 'E'},{6, 'F'},{7, 'G'},{8, 'H'},
+        {9, 'I'},{10, 'J'},{11, 'K'},{12, 'L'},{13, 'M'},{14, 'N'},{15, 'O'},{16, 'P'},{17, 'Q'},
+        {18, 'R'},{19, 'S'},{20, 'T'},{21, 'U'},{22, 'V'},{23, 'W'},{24, 'X'},{25, 'Y'},{26, 'Z'}
+    };
 }
 class Decode
 {
     public static string[] supportedDecoders =
     {
-        "BINARY",
-        "MORSE"
+        "BINARY","MORSE","A1Z26",
     };
     private static string[] unsupportedDecoders =
     {
-        "DECIMAL","HEXADECIMAL","OCTAL","A1Z26",
+        "DECIMAL","HEXADECIMAL","OCTAL",
         // LOW PRIORITY AS OF NOW, MAINLY BECAUSE I NEED TO LEARN THE CIPHERS AND HOW TO ENCODE AND DECODE THEM.
         "AMSCO","AUTOKEY","BACONIAN","BAZERIES","BEAUFORT","BIFID","CADENUS","CHECKERBOARD","COMPLETE COLUMNAR TRANSPOSITION","COMPRESSOCRAT",
         "CONDI","CM BIFID","DIGRAFID","FOURSQUARE","FRACTIONATED MORSE","GRANDPRÉ","GRILLE","GROMARK","GRONSFELD","HEADLINES",
@@ -92,7 +97,7 @@ class Decode
     }
     public static void Morse(string userInput)
     {
-        string[] input = userInput.Split(" ");
+        string[] input = userInput.Trim().Split(" ");
         foreach (string morseInputChar in input)
         {
             try{
@@ -104,16 +109,34 @@ class Decode
             }
         }
     }
+    public static void A1Z26(string userInput)
+    {
+        string[] input = userInput.Trim().Split(" ");
+        foreach (string a1z26InputChar in input)
+        {
+            try{
+                Console.Write(Dictionaries.a1z26ToChar[int.Parse(a1z26InputChar)]);
+            }
+            catch (KeyNotFoundException e)
+            {
+                Console.Write($"<{e.Message}>");
+            }
+            catch (FormatException e)
+            {
+                Console.WriteLine($"<{e.Message}>");
+            }
+        }
+    }
 }
 class Encode
 {
     public static string[] supportedEncoders =
     {
-        "BINARY","MORSE"
+        "BINARY","MORSE","A1Z26",
     };
     private static string[] unsupportedEncoders =
     {
-        "DECIMAL","HEXADECIMAL","OCTAL","A1Z26",
+        "DECIMAL","HEXADECIMAL","OCTAL",
         // LOW PRIORITY AS OF NOW, MAINLY BECAUSE I NEED TO LEARN THE CIPHERS AND HOW TO ENCODE AND DECODE THEM.
         "AMSCO","AUTOKEY","BACONIAN","BAZERIES","BEAUFORT","BIFID","CADENUS","CHECKERBOARD","COMPLETE COLUMNAR TRANSPOSITION","COMPRESSOCRAT",
         "CONDI","CM BIFID","DIGRAFID","FOURSQUARE","FRACTIONATED MORSE","GRANDPRÉ","GRILLE","GROMARK","GRONSFELD","HEADLINES",
@@ -131,9 +154,9 @@ class Encode
                 Console.Write(Dictionaries.binaryToChar.FirstOrDefault(x => x.Value == character).Key);
                 Thread.Sleep(20);
             }
-            catch (KeyNotFoundException e)
+            catch (FormatException e)
             {
-                Console.WriteLine("\n" + e.Message);
+                Console.WriteLine($"<{e.Message}>");
             }
         }
     }
@@ -151,6 +174,22 @@ class Encode
             {
                 morseCharacter = Dictionaries.morseToChar.FirstOrDefault(x => x.Value == 'H').Key;
                 Console.Write($"/ {morseCharacter} {morseCharacter} / ");
+            }
+        }
+    }
+    public static void A1Z26(string userInput)
+    {
+        string input = userInput.ToUpper();
+        foreach(char character in input){
+            int a1z26Character = Dictionaries.a1z26ToChar.FirstOrDefault(x => x.Value == character).Key;
+            if (a1z26Character != null)
+            {
+                Console.Write(a1z26Character + " ");
+                Thread.Sleep(20);
+            }
+            else
+            {
+                Console.Write("0");
             }
         }
     }
@@ -180,6 +219,9 @@ class Ciphers
                         case "MORSE":
                             Decode.Morse(Console.ReadLine());
                             break;
+                        case "A1Z26":
+                            Decode.A1Z26(Console.ReadLine());
+                            break;
                         default:
                             Console.WriteLine("Unsupported method inside decode switch... somehow...");
                             break;
@@ -204,6 +246,9 @@ class Ciphers
                             case "MORSE":
                                 Encode.Morse(Console.ReadLine());
                                 break;
+                            case "A1Z26":
+                                Encode.A1Z26(Console.ReadLine());
+                                break;
                             default:
                                 Console.WriteLine("Unsupported method inside decode switch... somehow...");
                                 break;
@@ -223,6 +268,9 @@ class Ciphers
                     case 'd':
                         switch (cipherDirectionCheck.ToLower()[2])
                         {
+                            case 'a':
+                                Decode.A1Z26(Console.ReadLine());
+                                break;
                             case 'b':
                                 Decode.Binary(Console.ReadLine());
                                 break;
@@ -237,6 +285,9 @@ class Ciphers
                     case 'e':
                         switch (cipherDirectionCheck.ToLower()[2])
                         {
+                            case 'a':
+                                Encode.A1Z26(Console.ReadLine());
+                                break;
                             case 'b':
                                 Encode.Binary(Console.ReadLine());
                                 break;
