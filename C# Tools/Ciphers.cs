@@ -9,7 +9,7 @@ using System.Collections.Concurrent;
 */
 class Dictionaries
 {
-    public static Dictionary<string, char> binaryToChar = new Dictionary<string, char>{
+    public static Dictionary<string, char> binaryToChar = new Dictionary<string, char> {
         // uppercase non-accented characters, probably will not add 
         // accented characters unless demand is met
             {"01000001", 'A'},{"01000010", 'B'},{"01000011", 'C'},{"01000100", 'D'},{"01000101", 'E'},{"01000110", 'F'},{"01000111", 'G'},{"01001000", 'H'},{"01001001", 'I'},{"01001010", 'J'},
@@ -34,7 +34,7 @@ class Dictionaries
             {"00111010", ':'},{"00100111", '\''},{"00100010", '\"'},{"00101100", ','},{"00111100", '<'},{"00101110", '.'},
             {"00111110", '>'},{"00101111", '/'},{"00111111", '?'},{"00001010", '\n'}
     };
-    public static Dictionary<string, char> morseToChar = new Dictionary<string, char>    {
+    public static Dictionary<string, char> morseToChar = new Dictionary<string, char> {
         // non-accented characters, probably will not add 
         // accented characters unless demand is met
             {".-", 'A'},{"-...", 'B'},{"-.-.", 'C'},{"-..", 'D'},{".", 'E'},{"..-.", 'F'},{"--.", 'G'},{"....", 'H'},{"..", 'I'},{".---", 'J'},
@@ -45,22 +45,44 @@ class Dictionaries
             {"-.-.--", '!'},{".--.-.", '@'},{".-...", '&'},{"-.--.", '('},{"-.--.-", ')'},{"---...", ':'},{".----.", '\''},
             {".-..-.", '\"'},{"--..--", ','},{".-.-.-", '.'},{"-..-.", '/'},{"..--..", '?'},{".-.-.",'+'},{"/", ' '},{"-....-", '-'}
     };
-    public static Dictionary<int, char> a1z26ToChar = new Dictionary<int, char>
-    {
+    public static Dictionary<int, char> a1z26ToChar = new Dictionary<int, char> {
         {0, ' '},{1, 'A'},{2, 'B'},{3, 'C'},{4, 'D'},{5, 'E'},{6, 'F'},{7, 'G'},{8, 'H'},
         {9, 'I'},{10, 'J'},{11, 'K'},{12, 'L'},{13, 'M'},{14, 'N'},{15, 'O'},{16, 'P'},{17, 'Q'},
         {18, 'R'},{19, 'S'},{20, 'T'},{21, 'U'},{22, 'V'},{23, 'W'},{24, 'X'},{25, 'Y'},{26, 'Z'}
+    };
+    public static Dictionary<int, char> decimalToChar = new Dictionary<int, char>
+    {
+        // numbers
+            {48,'0'},{49,'1'},{50,'2'},{51,'3'},{52,'4'},{53,'5'},{54,'6'},{55,'7'},{56,'8'},{57,'9'},
+
+        // lowercase non-accented characters, probably will not add 
+        // accented characters unless demand is met
+            {97,'a'},{98,'b'},{99,'c'},{100,'d'},{101,'e'},{102,'f'},{103,'g'},{104,'h'},{105,'i'},{106,'j'},
+            {107,'k'},{108,'l'},{109,'m'},{110,'n'},{111,'o'},{112,'p'},{113,'q'},{114,'r'},{115,'s'},{116,'t'},
+            {117,'u'},{118,'v'},{119,'w'},{120,'x'},{121,'y'},{122,'z'},
+
+        // uppercase non-accented characters, probably will not add 
+        // accented characters unless demand is met
+            {65,'A'},{66,'B'},{67,'C'},{68,'D'},{69,'E'},{70,'F'},{71,'G'},{72,'H'},{73,'I'},{74,'J'},
+            {75,'K'},{76,'L'},{77,'M'},{78,'N'},{79,'O'},{80,'P'},{81,'Q'},{82,'R'},{83,'S'},{84,'T'},
+            {85,'U'},{86,'V'},{87,'W'},{88,'X'},{89,'Y'},{90,'Z'},
+
+        // symbols
+            {96,'`'},{126,'~'},{33,'!'},{64,'@'},{35,'#'},{36,'$'},{37,'%'},{94,'^'},{38,'&'},{42,'*'},
+            {40,'('},{41,')'},{45,'-'},{95,'_'},{61,'='},{43,'+'},{91,'['},{123,'{'},{93,']'},{125,'}'},
+            {92,'\\'},{124,'|'},{59,';'},{58,':'},{39,'\''},{34,'\"'},{44,','},{60,'<'},{46,'.'},{62,'>'},
+            {47,'/'},{63,'?'},{32,' '}
     };
 }
 class Decode
 {
     public static string[] supportedDecoders =
     {
-        "BINARY","MORSE","A1Z26",
+        "BINARY","MORSE","A1Z26","DECIMAL",
     };
     private static string[] unsupportedDecoders =
     {
-        "DECIMAL","HEXADECIMAL","OCTAL",
+        "HEXADECIMAL","OCTAL",
         // LOW PRIORITY AS OF NOW, MAINLY BECAUSE I NEED TO LEARN THE CIPHERS AND HOW TO ENCODE AND DECODE THEM.
         "AMSCO","AUTOKEY","BACONIAN","BAZERIES","BEAUFORT","BIFID","CADENUS","CHECKERBOARD","COMPLETE COLUMNAR TRANSPOSITION","COMPRESSOCRAT",
         "CONDI","CM BIFID","DIGRAFID","FOURSQUARE","FRACTIONATED MORSE","GRANDPRÉ","GRILLE","GROMARK","GRONSFELD","HEADLINES",
@@ -127,16 +149,34 @@ class Decode
             }
         }
     }
+    public static void Decimal(string userInput)
+    {
+        string[] input = userInput.Trim().Split(" ");
+        foreach (string decimalInputChar in input)
+        {
+            try{
+                Console.Write(Dictionaries.decimalToChar[int.Parse(decimalInputChar)]);
+            }
+            catch (KeyNotFoundException e)
+            {
+                Console.Write($"<{e.Message}>");
+            }
+            catch (FormatException e)
+            {
+                Console.WriteLine($"<{e.Message}>");
+            }
+        }
+    }
 }
 class Encode
 {
     public static string[] supportedEncoders =
     {
-        "BINARY","MORSE","A1Z26",
+        "BINARY","MORSE","A1Z26","DECIMAL",
     };
     private static string[] unsupportedEncoders =
     {
-        "DECIMAL","HEXADECIMAL","OCTAL",
+        "HEXADECIMAL","OCTAL",
         // LOW PRIORITY AS OF NOW, MAINLY BECAUSE I NEED TO LEARN THE CIPHERS AND HOW TO ENCODE AND DECODE THEM.
         "AMSCO","AUTOKEY","BACONIAN","BAZERIES","BEAUFORT","BIFID","CADENUS","CHECKERBOARD","COMPLETE COLUMNAR TRANSPOSITION","COMPRESSOCRAT",
         "CONDI","CM BIFID","DIGRAFID","FOURSQUARE","FRACTIONATED MORSE","GRANDPRÉ","GRILLE","GROMARK","GRONSFELD","HEADLINES",
@@ -193,6 +233,22 @@ class Encode
             }
         }
     }
+    public static void Decimal(string userInput)
+    {
+        string input = userInput;
+        foreach(char character in input){
+            int a1z26Character = Dictionaries.decimalToChar.FirstOrDefault(x => x.Value == character).Key;
+            if (a1z26Character != null)
+            {
+                Console.Write(a1z26Character + " ");
+                Thread.Sleep(20);
+            }
+            else
+            {
+                Console.Write("<error parsing character>");
+            }
+        }
+    }
 }
 class Ciphers
 {
@@ -222,6 +278,9 @@ class Ciphers
                         case "A1Z26":
                             Decode.A1Z26(Console.ReadLine());
                             break;
+                        case "DECIMAL":
+                            Decode.Decimal(Console.ReadLine());
+                            break;
                         default:
                             Console.WriteLine("Unsupported method inside decode switch... somehow...");
                             break;
@@ -249,6 +308,9 @@ class Ciphers
                             case "A1Z26":
                                 Encode.A1Z26(Console.ReadLine());
                                 break;
+                            case "DECIMAL":
+                                Encode.Decimal(Console.ReadLine());
+                                break;
                             default:
                                 Console.WriteLine("Unsupported method inside decode switch... somehow...");
                                 break;
@@ -274,6 +336,9 @@ class Ciphers
                             case 'b':
                                 Decode.Binary(Console.ReadLine());
                                 break;
+                            case 'd':
+                                Decode.Decimal(Console.ReadLine());
+                                break;
                             case 'm':
                                 Decode.Morse(Console.ReadLine());
                                 break;
@@ -290,6 +355,9 @@ class Ciphers
                                 break;
                             case 'b':
                                 Encode.Binary(Console.ReadLine());
+                                break;
+                            case 'd':
+                                Encode.Decimal(Console.ReadLine());
                                 break;
                             case 'm':
                                 Encode.Morse(Console.ReadLine());

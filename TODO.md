@@ -1,5 +1,4 @@
 1. Hexadecimal
-3. Decimal
 4. Octal
 . (LOW PRIORITY) Encoding and decoding support for the following ciphers:
 * "AMSCO"
