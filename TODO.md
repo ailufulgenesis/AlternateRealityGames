@@ -1,6 +1,8 @@
-1. Hexadecimal
-4. Octal
-. (LOW PRIORITY) Encoding and decoding support for the following ciphers:
+1. Amino
+2. NATO
+3. ASCII85 (Decode)
+3. Word de-scrambler
+2. (LOW PRIORITY) Encoding and decoding support for the following ciphers:
 * "AMSCO"
 * "AUTOKEY"
 * "BACONIAN"
@@ -65,3 +67,4 @@
 * "VARIANT"
 * "VIGENÈRE"
 * 
+3. (LOW PRIORITY) Cipher Identifier
