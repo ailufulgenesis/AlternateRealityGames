@@ -190,10 +190,11 @@ class Referrals
 }
 class Decode
 {
-    public static void Binary(string userInput)
+    public static string Binary(string userInput)
     {
         string input = userInput.Replace(" ","");
         int decodeCharAmount = 8;
+        string output = "";
         if((input.Length) % decodeCharAmount != 0){
             Console.WriteLine($"\nNote that the input is not a multiple of {decodeCharAmount}. Proceeding...\n");
             Thread.Sleep(1000);
@@ -202,7 +203,7 @@ class Decode
             int startNum = i*decodeCharAmount;
             int endNum = startNum+decodeCharAmount;
             try{
-                Console.Write(Referrals.binaryToChar[input[((startNum))..(endNum)]]);
+                output += Referrals.binaryToChar[input[((startNum))..(endNum)]];
                 // Thread.Sleep(20);
             }
             catch (ArgumentOutOfRangeException)
@@ -215,6 +216,7 @@ class Decode
                 Console.WriteLine("\n" + e.Message);
             }
         }
+        return output;
     }
     public static void Morse(string userInput)
     {
@@ -248,9 +250,64 @@ class Decode
             }
         }
     }
-    public static void ASCII85(string userInput)
+    public static string ASCII85(string userInput)
     {
-        
+        string input = userInput;
+        int decodeCharAmount = 5;
+        string output = "";
+        string trueBinaryString = "";
+        // Check if multiple of 5, if not add u until multiple of 5
+        if((input.Length) % decodeCharAmount != 0){
+            string additionalChars = "";
+            for(int i = 0; i < input.Length % decodeCharAmount; i++)
+            {
+                additionalChars += "u";
+            }
+            input += additionalChars;
+        }
+        int inputOriginalLength = input.Length;
+        // for every 5 chars, encode into decimal
+        for(int i = 0; i < ((double)(inputOriginalLength) / decodeCharAmount); i++){
+            string binaryString = "";
+            string decimalNumbers = "";
+            int startNum = 0;
+            int endNum = startNum+decodeCharAmount;
+            if(input.Length != 0){
+                decimalNumbers += Encode.Decimal(input[((startNum))..(endNum)]);
+            }
+
+            string[] decimalStringArray = decimalNumbers.Trim().Split(" ");
+            int[] decimalIntArray = new int[decimalStringArray.Count()];
+            int decimalIterator = 0;
+            foreach(string decimalInt in decimalStringArray){
+                if(decimalInt is not null){
+                    decimalIntArray[decimalIterator] = int.Parse(decimalInt)-33;
+                    decimalIterator++;
+                }
+            }
+            // Gets base 10 number from decimal numbers
+            double remainder = 0;
+            foreach(int decimalNum in decimalIntArray) 
+            {
+                remainder = remainder * 85 + decimalNum;
+            }
+            // Gets base2 number from base 10
+            while (remainder >= 0){
+                double modnum = remainder % 2;
+                binaryString += modnum;
+                remainder = remainder-modnum;
+                remainder = remainder / 2;
+                if(remainder == 0){break;}
+            }
+            input = input[(endNum)..input.Length];
+            binaryString += "0";
+            char[] reversedBinaryToCharArray = binaryString.ToCharArray();
+            Array.Reverse(reversedBinaryToCharArray);
+            string unreversedBinaryString = new string(reversedBinaryToCharArray);
+            trueBinaryString += unreversedBinaryString;
+        }
+        output = Decode.Binary(trueBinaryString);
+        return output;
     }
     public static string Decimal(string userInput)
     {
@@ -487,7 +544,6 @@ class Encode
             for(int i = 0;i < base85Nums.Count(); i++)
             {
                 base85Nums[i] = (base85Nums[i]+33);
-
             }
 
             for(int i = 0; i < base85Nums.Count();i++)
@@ -648,7 +704,7 @@ class Ciphers
                                         switch (fourthCharUserInput)
                                         {
                                             case (int)Referrals.asciiCiphers.BINARY:
-                                                Decode.Binary(userInput);
+                                                Console.WriteLine(Decode.Binary(userInput));
                                                 break;
                                             case (int)Referrals.asciiCiphers.DECIMAL:
                                                 Decode.Decimal(userInput);
@@ -663,6 +719,9 @@ class Ciphers
                                                 Console.WriteLine("Unsupported shorthand. For ASCII please type any number 0-3.");
                                                 break;
                                         }
+                                        break;
+                                    case (int)Referrals.supportedCipherShorthands.ASCII85:
+                                        Console.WriteLine(Decode.ASCII85(userInput));
                                         break;
                                     case (int)Referrals.supportedCipherShorthands.MORSE:
                                         Decode.Morse(userInput);
