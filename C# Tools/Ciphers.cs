@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 using System.Xml;
 
 /*
     Reference list:
         INTERNATIONAL MORSE:    https://morsecode.world/international/morse.html
         CIPHER LIST:            https://www.cryptogram.org/resource-area/cipher-types/
-        MIT CHEAT SHEET:        https://web.mit.edu/org/b/bloggers/www/snively11/CheatSheet/cheatsheat.pdf    
+        ANOTHER CIPHER LISR:    https://rumkin.com/tools/cipher/
+        MIT CHEAT SHEET:        https://web.mit.edu/org/b/bloggers/www/snively11/CheatSheet/cheatsheat.pdf
+
 */
 class Referrals
 {
@@ -27,11 +30,11 @@ class Referrals
     }
     public static string[] supportedDecoders =
     {
-        "BINARY","MORSE","A1Z26","DECIMAL","HEXADECIMAL","OCTAL",
+        "BINARY","MORSE","A1Z26","DECIMAL","HEXADECIMAL","OCTAL","ASCII85",
     };
     private static string[] unsupportedDecoders =
     {
-        "ASCII85",
+        
         // LOW PRIORITY AS OF NOW, MAINLY BECAUSE I NEED TO LEARN THE CIPHERS AND HOW TO ENCODE AND DECODE THEM.
         "AMSCO","AUTOKEY","BACONIAN","BAZERIES","BEAUFORT","BIFID","CADENUS","CHECKERBOARD","COMPLETE COLUMNAR TRANSPOSITION","COMPRESSOCRAT",
         "CONDI","CM BIFID","DIGRAFID","FOURSQUARE","FRACTIONATED MORSE","GRANDPRÉ","GRILLE","GROMARK","GRONSFELD","HEADLINES",
@@ -43,11 +46,11 @@ class Referrals
     };
     public static string[] supportedEncoders =
     {
-        "BINARY","MORSE","A1Z26","DECIMAL","HEXADECIMAL","OCTAL",
+        "BINARY","MORSE","A1Z26","DECIMAL","HEXADECIMAL","OCTAL","ASCII85",
     };
     private static string[] unsupportedEncoders =
     {
-        "ASCII85",
+        
         // LOW PRIORITY AS OF NOW, MAINLY BECAUSE I NEED TO LEARN THE CIPHERS AND HOW TO ENCODE AND DECODE THEM.
         "AMSCO","AUTOKEY","BACONIAN","BAZERIES","BEAUFORT","BIFID","CADENUS","CHECKERBOARD","COMPLETE COLUMNAR TRANSPOSITION","COMPRESSOCRAT",
         "CONDI","CM BIFID","DIGRAFID","FOURSQUARE","FRACTIONATED MORSE","GRANDPRÉ","GRILLE","GROMARK","GRONSFELD","HEADLINES",
@@ -203,7 +206,10 @@ class Decode
             int startNum = i*decodeCharAmount;
             int endNum = startNum+decodeCharAmount;
             try{
-                output += Referrals.binaryToChar[input[((startNum))..(endNum)]];
+                if(input[((startNum))..(endNum)] != "00000000")
+                {
+                    output += Referrals.binaryToChar[input[((startNum))..(endNum)]];
+                }
                 // Thread.Sleep(20);
             }
             catch (ArgumentOutOfRangeException)
@@ -218,27 +224,30 @@ class Decode
         }
         return output;
     }
-    public static void Morse(string userInput)
+    public static string Morse(string userInput)
     {
         string[] input = userInput.Trim().Split(" ");
+        string output = "";
         foreach (string morseInputChar in input)
         {
             try{
-                Console.Write(Referrals.morseToChar[morseInputChar]);
+                output += Referrals.morseToChar[morseInputChar];
             }
             catch (KeyNotFoundException)
             {
                 Console.Write("<HH>");
             }
         }
+        return output;
     }
-    public static void A1Z26(string userInput)
+    public static string A1Z26(string userInput)
     {
         string[] input = userInput.Trim().Split(" ");
+        string output = "";
         foreach (string a1z26InputChar in input)
         {
             try{
-                Console.Write(Referrals.a1z26ToChar[int.Parse(a1z26InputChar)]);
+                output += Referrals.a1z26ToChar[int.Parse(a1z26InputChar)];
             }
             catch (KeyNotFoundException e)
             {
@@ -249,6 +258,7 @@ class Decode
                 Console.WriteLine($"<{e.Message}>");
             }
         }
+        return output;
     }
     public static string ASCII85(string userInput)
     {
@@ -329,10 +339,11 @@ class Decode
         }
         return output;
     }
-    public static void Hexadecimal(string userInput)
+    public static string Hexadecimal(string userInput)
     {
         string input = userInput.Trim().Replace("\\x","").Replace(" ","").ToUpper();
         int decodeCharAmount = 2;
+        string output = "";
         if((input.Length) % decodeCharAmount != 0){
             Console.WriteLine($"\nNote that the input is not a multiple of {decodeCharAmount}. Proceeding...\n");
             Thread.Sleep(1000);
@@ -341,7 +352,7 @@ class Decode
             int startNum = i*decodeCharAmount;
             int endNum = startNum+decodeCharAmount;
             try{
-                Console.Write(Referrals.hexadecimalToChar[input[((startNum))..(endNum)]]);
+                output += Referrals.hexadecimalToChar[input[((startNum))..(endNum)]];
                 // Thread.Sleep(20);
             }
             catch (ArgumentOutOfRangeException)
@@ -354,11 +365,13 @@ class Decode
                 Console.WriteLine("\n" + e.Message);
             }
         }
+        return output;
     }
-    public static void Octal(string userInput)
+    public static string Octal(string userInput)
     {
         string input = userInput.Trim().Replace("\\x","").Replace(" ","");
         int decodeCharAmount = 3;
+        string output = "";
         if((input.Length) % decodeCharAmount != 0){
             Console.WriteLine($"\nNote that the input is not a multiple of {decodeCharAmount}. Proceeding...\n");
             Thread.Sleep(1000);
@@ -367,7 +380,7 @@ class Decode
             int startNum = i*decodeCharAmount;
             int endNum = startNum+decodeCharAmount;
             try{
-                Console.Write(Referrals.octalToChar[input[((startNum))..(endNum)]]);
+                output += Referrals.octalToChar[input[((startNum))..(endNum)]];
                 // Thread.Sleep(20);
             }
             catch (ArgumentOutOfRangeException)
@@ -380,6 +393,7 @@ class Decode
                 Console.WriteLine("\n" + e.Message);
             }
         }
+        return output;
     }
 }
 class Encode
@@ -402,14 +416,15 @@ class Encode
         }
         return output;
     }
-    public static void Morse(string userInput)
+    public static string Morse(string userInput)
     {
         string input = userInput.ToUpper();
+        string output = "";
         foreach(char character in input){
             string morseCharacter = Referrals.morseToChar.FirstOrDefault(x => x.Value == character).Key;
             if (morseCharacter != null)
             {
-                Console.Write(morseCharacter + " ");
+                output += morseCharacter + " ";
                 // Thread.Sleep(20);
             }
             else
@@ -418,15 +433,18 @@ class Encode
                 Console.Write($"/ {morseCharacter} {morseCharacter} / ");
             }
         }
+        return output;
     }
-    public static void A1Z26(string userInput)
+    public static string A1Z26(string userInput)
     {
         string input = userInput.ToUpper();
+        string output = "";
         foreach(char character in input){
             int a1z26Character = Referrals.a1z26ToChar.FirstOrDefault(x => x.Value == character).Key;
-            Console.Write(a1z26Character + " ");
+            output += a1z26Character + " ";
             // Thread.Sleep(20);
         }
+        return output;
     }
     public static string Decimal(string userInput)
     {
@@ -439,14 +457,15 @@ class Encode
         }
         return output;
     }
-    public static void Hexadecimal(string userInput)
+    public static string Hexadecimal(string userInput)
     {
         string input = userInput;
+        string output = "";
         foreach(char character in input){
             string hexadecimalCharacter = Referrals.hexadecimalToChar.FirstOrDefault(x => x.Value == character).Key;
             if (hexadecimalCharacter != null)
             {
-                Console.Write(hexadecimalCharacter + " ");
+                output += hexadecimalCharacter + " ";
                 // Thread.Sleep(20);
             }
             else
@@ -455,16 +474,18 @@ class Encode
                 Console.Write($"<error>");
             }
         }
+        return output;
     }
-    public static void Octal(string userInput)
+    public static string Octal(string userInput)
     {
         string input = userInput;
+        string output = "";
         foreach(char character in input){
             string octalCharacter = Referrals.octalToChar.FirstOrDefault(x => x.Value == character).Key;
             if (octalCharacter != null)
             {
             
-                Console.Write(octalCharacter + " ");
+                output += octalCharacter + " ";
                 // Thread.Sleep(20);
             }
             else
@@ -473,6 +494,7 @@ class Encode
                 Console.Write($"<error>");
             }
         }
+        return output;
     }
     public static string ASCII85(string userInput)
     {
@@ -558,227 +580,252 @@ class Ciphers
 {
     static void Main(string[] args)
     {
-        //Console.Clear();
-        string? cipherDirectionCheck = null;
-        string? userInput = null;
-        Console.Write("Encode or Decode (or shorthand) > ");
+        string continuePrompt = "N";
         do {
-            if(cipherDirectionCheck == "buh"){Console.WriteLine("If you meant to type something, type something... otherwise choose encode, decode, or do a shorthand code.");}
-            else if(cipherDirectionCheck is not null){Console.WriteLine("Please type encode, decode, or some shorthand code.");}
-            cipherDirectionCheck = Console.ReadLine() ?? "buh";
-            if(cipherDirectionCheck is not null && cipherDirectionCheck == "help"){
-                Console.WriteLine("Shorthand code is as follows: \n* First character: s to signal shorthand.\n* Second character to represent (e)ncode or (d)ecode.");
-                Console.WriteLine("* Following characters represents the intended code. Current supported codes include:");
-                int iterator = 0;
-                int asciiIterator = 0;
-                foreach(var thing in Enum.GetValues(typeof(Referrals.supportedCipherShorthands)))
-                {
-                    Console.WriteLine($"\t> 3rd char as: {thing} = {iterator}");
-                    if($"{thing}" == "ASCII"){
-                        foreach(var thingie in Enum.GetValues(typeof(Referrals.asciiCiphers)))
-                        {
-                            Console.WriteLine($"\t> > 4th character as {thingie} = {asciiIterator}");
-                            asciiIterator++;
-                        }
-                    }
-                    iterator++;
-                }
-                ;
-            };
-        } while (cipherDirectionCheck is not null && cipherDirectionCheck.ToLower() != "decode" && cipherDirectionCheck.ToLower() != "encode" && cipherDirectionCheck.ToLower()[0] != 's');
-
-        if(cipherDirectionCheck is not null){
-            //DECODE CHECKS
-            if(cipherDirectionCheck.ToLower() == "decode"){
-                Console.Write("Decode what? > ");
-                string? decodeType = Console.ReadLine()?.Trim() ?? "crelly stinky";
-                if(Referrals.supportedDecoders.Contains(decodeType.ToUpper())){
-                    Console.Write($"Type your {decodeType} message. > ");
-                    userInput = Console.ReadLine();
-                    if(userInput is not null){
-                        switch(decodeType.ToUpper()){
-                            case "BINARY":
-                                Decode.Binary(userInput);
-                                break;
-                            case "MORSE":
-                                Decode.Morse(userInput);
-                                break;
-                            case "A1Z26":
-                                Decode.A1Z26(userInput);
-                                break;
-                            case "DECIMAL":
-                                Decode.Decimal(userInput);
-                                break;
-                            case "HEXADECIMAL":
-                                Decode.Hexadecimal(userInput);
-                                break;
-                            case "OCTAL":
-                                Decode.Octal(userInput);
-                                break;
-                            default:
-                                Console.WriteLine("Unsupported method inside decode switch... somehow...");
-                                break;
-                        }
-                    } else {Console.WriteLine("Input detected as null.");}
-                }
-                else if (decodeType == "crelly stinky")
-                {
-                    Console.WriteLine("Decode type detected as null... sorry.");
-                }
-                else
-                {
-                    Console.WriteLine("Unsupported method. Please check back later for new updates.");
-                }
-            }
-
-            //ENCODING CHECKS
-            else if(cipherDirectionCheck.ToLower() == "encode"){
-                Console.Write("Encode what? > ");
-                string? encodeType = Console.ReadLine()?.Trim();
-                if(encodeType is not null && Referrals.supportedEncoders.Contains(encodeType.ToUpper())){
-                    Console.Write($"Type your {encodeType} message. > ");
-                    userInput = Console.ReadLine();
-                    if(userInput is not null){
-                        switch(encodeType.ToUpper()){
-                            case "BINARY":
-                                Encode.Binary(userInput);
-                                break;
-                            case "MORSE":
-                                Encode.Morse(userInput);
-                                break;
-                            case "A1Z26":
-                                Encode.A1Z26(userInput);
-                                break;
-                            case "DECIMAL":
-                                Encode.Decimal(userInput);
-                                break;
-                            case "HEXADECIMAL":
-                                Encode.Hexadecimal(userInput);
-                                break;
-                            case "OCTAL":
-                                Encode.Octal(userInput);
-                                break;
-                            default:
-                                Console.WriteLine("Unsupported method inside decode switch... somehow...");
-                                break;
-                        }
-                    } else {Console.WriteLine("Input detected as null.");}
-                }
-                else
-                {
-                    Console.WriteLine("Unsupported method. Please check back later for new updates.");
-                }
-            }
-
-            //SHORTHAND CODE CHECKS
-            else if (cipherDirectionCheck.ToLower()[0] == 's')
-            {
-                if(cipherDirectionCheck is not null){
-                    int thirdCharUserInput = -1;
-                    int fourthCharUserInput = -1;
-                    try{
-                        thirdCharUserInput = Int32.Parse($"{cipherDirectionCheck.ToLower()[2]}");
-                        fourthCharUserInput = Int32.Parse($"{cipherDirectionCheck.ToLower()[3]}");
-                    }
-                    catch (FormatException e)
+            string mainOutput = "";
+            //Console.Clear();
+            string? cipherDirectionCheck = null;
+            string? userInput = null;
+            Console.Write("Encode or Decode (or shorthand) > ");
+            do {
+                if(cipherDirectionCheck == "buh"){Console.WriteLine("If you meant to type something, type something... otherwise choose encode, decode, or do a shorthand code.");}
+                else if(cipherDirectionCheck is not null){Console.WriteLine("Please type encode, decode, or some shorthand code.");}
+                cipherDirectionCheck = Console.ReadLine() ?? "buh";
+                if(cipherDirectionCheck is not null && cipherDirectionCheck == "help"){
+                    Console.WriteLine("Shorthand code is as follows: \n* First character: s to signal shorthand.\n* Second character to represent (e)ncode or (d)ecode.");
+                    Console.WriteLine("* Following characters represents the intended code. Current supported codes include:");
+                    int iterator = 0;
+                    int asciiIterator = 0;
+                    foreach(var thing in Enum.GetValues(typeof(Referrals.supportedCipherShorthands)))
                     {
-                        Console.WriteLine($"Unsupported shorthand. {e.Message} Please type a numer 0-9 for character 3.");
-                        return;
-                    }
-                    catch(IndexOutOfRangeException)
-                    {}
-
-                    Console.Write(" > ");
-                    userInput = Console.ReadLine();
-                    if(userInput is not null){
-                        switch(cipherDirectionCheck.ToLower()[1])
-                        {
-                            case 'd': //decode
-                                
-                                switch (thirdCharUserInput)
-                                {
-                                    case (int)Referrals.supportedCipherShorthands.A1Z26:
-                                        Decode.A1Z26(userInput);
-                                        break;
-                                    case (int)Referrals.supportedCipherShorthands.ASCII:
-                                        switch (fourthCharUserInput)
-                                        {
-                                            case (int)Referrals.asciiCiphers.BINARY:
-                                                Console.WriteLine(Decode.Binary(userInput));
-                                                break;
-                                            case (int)Referrals.asciiCiphers.DECIMAL:
-                                                Decode.Decimal(userInput);
-                                                break;
-                                            case (int)Referrals.asciiCiphers.HEXADECIMAL:
-                                                Decode.Hexadecimal(userInput);
-                                                break;
-                                            case (int)Referrals.asciiCiphers.OCTAL:
-                                                Decode.Octal(userInput);
-                                                break;
-                                            default:
-                                                Console.WriteLine("Unsupported shorthand. For ASCII please type any number 0-3.");
-                                                break;
-                                        }
-                                        break;
-                                    case (int)Referrals.supportedCipherShorthands.ASCII85:
-                                        Console.WriteLine(Decode.ASCII85(userInput));
-                                        break;
-                                    case (int)Referrals.supportedCipherShorthands.MORSE:
-                                        Decode.Morse(userInput);
-                                        break;
-                                    default:
-                                        Console.WriteLine("Unsupported shorthand. " + cipherDirectionCheck.ToLower()[2]);
-                                        break;
-                                }
-                                break;
-                            case 'e': //encode
-                                switch (thirdCharUserInput)
-                                {
-                                    case (int)Referrals.supportedCipherShorthands.A1Z26:
-                                        Encode.A1Z26(userInput);
-                                        break;
-                                    case (int)Referrals.supportedCipherShorthands.ASCII:
-                                        switch (fourthCharUserInput)
-                                        {
-                                            case (int)Referrals.asciiCiphers.BINARY:
-                                                Console.WriteLine(Encode.Binary(userInput));
-                                                break;
-                                            case (int)Referrals.asciiCiphers.DECIMAL:
-                                                Console.WriteLine(Encode.Decimal(userInput));
-                                                break;
-                                            case (int)Referrals.asciiCiphers.HEXADECIMAL:
-                                                Encode.Hexadecimal(userInput);
-                                                break;
-                                            case (int)Referrals.asciiCiphers.OCTAL:
-                                                Encode.Octal(userInput);
-                                                break;
-                                            default:
-                                                Console.WriteLine("Unsupported shorthand. For ASCII please type any number 0-3.");
-                                                break;
-                                        }
-                                        break;
-                                    case (int)Referrals.supportedCipherShorthands.ASCII85:
-                                        Console.WriteLine(Encode.ASCII85(userInput));
-                                        break;
-                                    case (int)Referrals.supportedCipherShorthands.MORSE:
-                                        Encode.Morse(userInput);
-                                        break;
-                                    default:
-                                        Console.WriteLine("Unsupported shorthand. " + cipherDirectionCheck.ToLower()[2]);
-                                        break;
-                                }
-                                break;
-                            default:
-                                Console.WriteLine("Unsupported shorthand.");
-                                break;
+                        Console.WriteLine($"\t> 3rd char as: {thing} = {iterator}");
+                        if($"{thing}" == "ASCII"){
+                            foreach(var thingie in Enum.GetValues(typeof(Referrals.asciiCiphers)))
+                            {
+                                Console.WriteLine($"\t> > 4th character as {thingie} = {asciiIterator}");
+                                asciiIterator++;
+                            }
                         }
-                    } else {Console.WriteLine("\nInput detected as null.");}
-                } else {Console.WriteLine("\nInput detected as null.");}
-            }
-            else
+                        iterator++;
+                    }
+                    ;
+                };
+            } while (cipherDirectionCheck is not null && cipherDirectionCheck.ToLower() != "decode" && cipherDirectionCheck.ToLower() != "encode" && cipherDirectionCheck.ToLower()[0] != 's');
+
+            if(cipherDirectionCheck is not null){
+                //DECODE CHECKS
+                if(cipherDirectionCheck.ToLower() == "decode"){
+                    Console.Write("Decode what? > ");
+                    string? decodeType = Console.ReadLine()?.Trim() ?? "crelly stinky";
+                    if(Referrals.supportedDecoders.Contains(decodeType.ToUpper())){
+                        Console.Write($"Type your {decodeType} message. > ");
+                        userInput = Console.ReadLine();
+                        if(userInput is not null){
+                            switch(decodeType.ToUpper()){
+                                case "BINARY":
+                                    mainOutput = Decode.Binary(userInput);
+                                    break;
+                                case "MORSE":
+                                    mainOutput = Decode.Morse(userInput);
+                                    break;
+                                case "A1Z26":
+                                    mainOutput = Decode.A1Z26(userInput);
+                                    break;
+                                case "DECIMAL":
+                                    mainOutput = Decode.Decimal(userInput);
+                                    break;
+                                case "HEXADECIMAL":
+                                    mainOutput = Decode.Hexadecimal(userInput);
+                                    break;
+                                case "OCTAL":
+                                    mainOutput = Decode.Octal(userInput);
+                                    break;
+                                case "ASCII85":
+                                    mainOutput = Decode.ASCII85(userInput);
+                                    break;
+                                default:
+                                    mainOutput = "Unsupported method inside decode switch... somehow...";
+                                    break;
+                            }
+                        } else {mainOutput = "Input detected as null.";}
+                    }
+                    else if (decodeType == "crelly stinky")
+                    {
+                        mainOutput = "Decode type detected as null... sorry.";
+                    }
+                    else
+                    {
+                        mainOutput = "Unsupported method. Please check back later for new updates.";
+                    }
+                }
+
+                //ENCODING CHECKS
+                else if(cipherDirectionCheck.ToLower() == "encode"){
+                    Console.Write("Encode what? > ");
+                    string? encodeType = Console.ReadLine()?.Trim();
+                    if(encodeType is not null && Referrals.supportedEncoders.Contains(encodeType.ToUpper())){
+                        Console.Write($"Type your {encodeType} message. > ");
+                        userInput = Console.ReadLine();
+                        if(userInput is not null){
+                            switch(encodeType.ToUpper()){
+                                case "BINARY":
+                                    mainOutput = Encode.Binary(userInput);
+                                    break;
+                                case "MORSE":
+                                    mainOutput = Encode.Morse(userInput);
+                                    break;
+                                case "A1Z26":
+                                    mainOutput = Encode.A1Z26(userInput);
+                                    break;
+                                case "DECIMAL":
+                                    mainOutput = Encode.Decimal(userInput);
+                                    break;
+                                case "HEXADECIMAL":
+                                    mainOutput = Encode.Hexadecimal(userInput);
+                                    break;
+                                case "OCTAL":
+                                    mainOutput = Encode.Octal(userInput);
+                                    break;
+                                case "ASCII85":
+                                    mainOutput = Encode.ASCII85(userInput);
+                                    break;
+                                default:
+                                    mainOutput = "Unsupported method inside encode switch... somehow...";
+                                    break;
+                            }
+                        } else {mainOutput = "Input detected as null.";}
+                    }
+                    else
+                    {
+                        mainOutput = "Unsupported method. Please check back later for new updates.";
+                    }
+                }
+
+                //SHORTHAND CODE CHECKS
+                else if (cipherDirectionCheck.ToLower()[0] == 's')
+                {
+                    if(cipherDirectionCheck is not null){
+                        int thirdCharUserInput = -1;
+                        int fourthCharUserInput = -1;
+                        try{
+                            thirdCharUserInput = Int32.Parse($"{cipherDirectionCheck.ToLower()[2]}");
+                            fourthCharUserInput = Int32.Parse($"{cipherDirectionCheck.ToLower()[3]}");
+                        }
+                        catch (FormatException e)
+                        {
+                            mainOutput = $"Unsupported shorthand. {e.Message} Please type a numer 0-9 for character 3.";
+                            return;
+                        }
+                        catch(IndexOutOfRangeException)
+                        {}
+
+                        Console.Write(" > ");
+                        userInput = Console.ReadLine();
+                        if(userInput is not null){
+                            switch(cipherDirectionCheck.ToLower()[1])
+                            {
+                                case 'd': //decode
+                                    
+                                    switch (thirdCharUserInput)
+                                    {
+                                        case (int)Referrals.supportedCipherShorthands.A1Z26:
+                                            mainOutput = Decode.A1Z26(userInput);
+                                            break;
+                                        case (int)Referrals.supportedCipherShorthands.ASCII:
+                                            switch (fourthCharUserInput)
+                                            {
+                                                case (int)Referrals.asciiCiphers.BINARY:
+                                                    mainOutput = Decode.Binary(userInput);
+                                                    break;
+                                                case (int)Referrals.asciiCiphers.DECIMAL:
+                                                    mainOutput = Decode.Decimal(userInput);
+                                                    break;
+                                                case (int)Referrals.asciiCiphers.HEXADECIMAL:
+                                                    mainOutput = Decode.Hexadecimal(userInput);
+                                                    break;
+                                                case (int)Referrals.asciiCiphers.OCTAL:
+                                                    mainOutput = Decode.Octal(userInput);
+                                                    break;
+                                                default:
+                                                    mainOutput = "Unsupported shorthand. For ASCII please type any number 0-3.";
+                                                    break;
+                                            }
+                                            break;
+                                        case (int)Referrals.supportedCipherShorthands.ASCII85:
+                                            mainOutput = Decode.ASCII85(userInput);
+                                            break;
+                                        case (int)Referrals.supportedCipherShorthands.MORSE:
+                                            mainOutput = Decode.Morse(userInput);
+                                            break;
+                                        default:
+                                            mainOutput = "Unsupported shorthand. " + cipherDirectionCheck.ToLower()[2];
+                                            break;
+                                    }
+                                    break;
+                                case 'e': //encode
+                                    switch (thirdCharUserInput)
+                                    {
+                                        case (int)Referrals.supportedCipherShorthands.A1Z26:
+                                            mainOutput = Encode.A1Z26(userInput);
+                                            break;
+                                        case (int)Referrals.supportedCipherShorthands.ASCII:
+                                            switch (fourthCharUserInput)
+                                            {
+                                                case (int)Referrals.asciiCiphers.BINARY:
+                                                    mainOutput = Encode.Binary(userInput);
+                                                    break;
+                                                case (int)Referrals.asciiCiphers.DECIMAL:
+                                                    mainOutput = Encode.Decimal(userInput);
+                                                    break;
+                                                case (int)Referrals.asciiCiphers.HEXADECIMAL:
+                                                    mainOutput = Encode.Hexadecimal(userInput);
+                                                    break;
+                                                case (int)Referrals.asciiCiphers.OCTAL:
+                                                    mainOutput = Encode.Octal(userInput);
+                                                    break;
+                                                default:
+                                                    mainOutput = "Unsupported shorthand. For ASCII please type any number 0-3.";
+                                                    break;
+                                            }
+                                            break;
+                                        case (int)Referrals.supportedCipherShorthands.ASCII85:
+                                            mainOutput = Encode.ASCII85(userInput);
+                                            break;
+                                        case (int)Referrals.supportedCipherShorthands.MORSE:
+                                            mainOutput = Encode.Morse(userInput);
+                                            break;
+                                        default:
+                                            mainOutput = "Unsupported shorthand. " + cipherDirectionCheck.ToLower()[2];
+                                            break;
+                                    }
+                                    break;
+                                default:
+                                    mainOutput = "Unsupported shorthand.";
+                                    break;
+                            }
+                        } else {mainOutput = "\nInput detected as null.";}
+                    } else {mainOutput = "\nInput detected as null.";}
+                }
+                else
+                {
+                    mainOutput = "uh oh";
+                }
+            } else {mainOutput = "cipherDirectionCheck detected as null.";}
+            Console.WriteLine(mainOutput);
+            Console.Write("Continue encoding / decoding? (Y/N) > ");
+            do
             {
-                Console.WriteLine("uh oh");
-            }
-        } else {Console.WriteLine("cipherDirectionCheck detected as null.");}
+                if(continuePrompt.ToUpper() == "Y OR N" || continuePrompt.ToUpper() == ("one or the other, and I mean the character").ToUpper())
+                {
+                    Console.Write("Haha. Very funny. Type one or the other, and I mean the character. (Y/N) > ");
+
+                }
+                else if(continuePrompt.ToUpper()[0] != 'Y' && continuePrompt.ToUpper()[0] != 'N')
+                {
+                    Console.Write("Please type Y or N. > ");
+                }
+                continuePrompt = Console.ReadLine() ?? "N";
+            } while ((continuePrompt.ToUpper()[0] != 'Y' && continuePrompt.ToUpper()[0] != 'N') || continuePrompt.ToUpper() == "Y OR N");
+        } while (continuePrompt.ToUpper() != "N");
     } 
 }
