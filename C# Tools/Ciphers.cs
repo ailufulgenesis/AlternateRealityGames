@@ -5,10 +5,11 @@ using System.Xml;
 
 /*
     Reference list:
-        INTERNATIONAL MORSE:    https://morsecode.world/international/morse.html
-        CIPHER LIST:            https://www.cryptogram.org/resource-area/cipher-types/
-        ANOTHER CIPHER LISR:    https://rumkin.com/tools/cipher/
-        MIT CHEAT SHEET:        https://web.mit.edu/org/b/bloggers/www/snively11/CheatSheet/cheatsheat.pdf
+        INTERNATIONAL MORSE:        https://morsecode.world/international/morse.html
+        CIPHER LIST:                https://www.cryptogram.org/resource-area/cipher-types/
+        ANOTHER CIPHER LISR:        https://rumkin.com/tools/cipher/
+        MIT CHEAT SHEET:            https://web.mit.edu/org/b/bloggers/www/snively11/CheatSheet/cheatsheat.pdf
+        DCODE CHARACTER ENCODING:   https://www.dcode.fr/tools-list#character_encoding
 
 */
 class Referrals

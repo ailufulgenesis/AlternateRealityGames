@@ -65,5 +65,4 @@
 * "TWO-SQUARE"
 * "VARIANT"
 * "VIGENÈRE"
-* 
 5. (LOW PRIORITY) Cipher Identifier
