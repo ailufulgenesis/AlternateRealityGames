@@ -1,7 +1,10 @@
-1. Amino
-2. NATO
-3. Word de-scrambler
-4. (LOW PRIORITY) Encoding and decoding support for the following ciphers:
+1. Add file read functionality to encode and decoders.
+2. Add file to ascii converter and vice versa. (i.e. something like [this](https://www.dcode.fr/file-data) to be able to run from CLI)
+* [Maybe something like this?](https://stackoverflow.com/questions/2426190/how-to-read-file-binary-in-c)
+3. Amino
+4. NATO
+5. Word de-scrambler
+6. (LOW PRIORITY) Encoding and decoding support for the following ciphers:
 * "AMSCO"
 * "AUTOKEY"
 * "BACONIAN"
@@ -65,4 +68,4 @@
 * "TWO-SQUARE"
 * "VARIANT"
 * "VIGENÈRE"
-5. (LOW PRIORITY) Cipher Identifier
+6. (LOW PRIORITY) Cipher Identifier
