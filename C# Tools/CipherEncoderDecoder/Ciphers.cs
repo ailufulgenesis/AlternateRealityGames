@@ -12,7 +12,7 @@ using System.Xml;
         DCODE CHARACTER ENCODING:   https://www.dcode.fr/tools-list#character_encoding
 
 */
-class Referrals
+class Referrals // Might eventually refactor so I don't rely on dictionaries...
 {
     public enum supportedCipherShorthands 
     {
